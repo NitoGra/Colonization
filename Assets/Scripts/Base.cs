@@ -1,69 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-internal class Base: MonoBehaviour
+internal class Base : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Scanner _scanner;
     [SerializeField] private BotListService _botListService;
     [SerializeField] private ModelGoldKeeper _modelGoldKeeper;
     [SerializeField] private WeaverGold _weaverGold;
-
-    private void Start()
+    [SerializeField] private FlagService _flagService;
+    
+    private void Awake()
     {
-        _scanner.Scan(transform,SendBotOnGold);
+        _botListService.Clear();
+        _scanner.Scan(transform, SendBotOnGold);
         _modelGoldKeeper.GoldChanged += _weaverGold.GoldDisplay;
+        _flagService.GetMoneyToNewBase += () => _modelGoldKeeper.ChangeBaseType();
+        _modelGoldKeeper.OnCreateNewBase += () => SendBotCreateNewBase(_flagService.GetFlagTransform);
+        _modelGoldKeeper.OnCreateNewBot += () => _botListService.CreateNewBot(this);
+        _modelGoldKeeper.CheckBotsCount += () => _botListService.GetCount;
+        _flagService.SetMaterial(GetComponent<Renderer>().material);
+        
+        for (int i = 0; i < _botListService.StartBotCount; i++)
+            _botListService.CreateNewBot(this);
     }
+
+    public void OnPointerClick(PointerEventData eventData) => _flagService.BaseClick(gameObject.GetEntityId());
+
+    public void BotReturnedToBase() => _modelGoldKeeper.IncreaseGold();
+
+    public void AddBot(Bot bot) => _botListService.Add(bot);
+
+    public void OnDrawGizmos() => _scanner.DisplayScanRadius(transform);
 
     private void SendBotOnGold(Gold gold)
     {
         if (_botListService.TryGetBot(out Bot bot))
         {
-            _scanner.SetTargetGold(gold);
+            gold.SetTarget();
             bot.MoveToGetGold(gold);
         }
     }
-
-    public void BotReturnedToBase(Gold gold)
+    
+    private async void SendBotCreateNewBase(Transform basePosition)
     {
-        _scanner.GoldTaken(gold);
-        _modelGoldKeeper.IncreaseGold();
-    }
-}
-
-[Serializable]
-internal class WeaverGold
-{
-    [SerializeField] private TextMeshProUGUI _textMeshProUGUI;
-
-    public void GoldDisplay(int gold)
-    {
-        _textMeshProUGUI.text =$"{gold}g";
-    }
-}
-
-[Serializable]
-internal class ModelGoldKeeper
-{
-    private int _gold = 0;
-    public Action<int> GoldChanged;
-
-    public void IncreaseGold()
-    {
-        _gold++;
-        GoldChanged?.Invoke(_gold);
-    }
-}
-
-[Serializable]
-internal class BotListService
-{
-    [SerializeField] private List<Bot> _botsList;
-
-    public bool TryGetBot(out Bot bot)
-    {
-        bot = _botsList.Find(t => t.BotState == BotState.Idle);
-        return bot !=  null;
+        Bot newBot = await _botListService.GetBotToCreateBase();
+        _botListService.Remove(newBot);
+        newBot.MoveToCreateBase(basePosition, _flagService.BuildNewBase);
     }
 }

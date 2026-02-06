@@ -9,20 +9,16 @@ internal class Scanner
     [SerializeField] private float _scanDelayInSeconds = 0.3f;
     [SerializeField] private float _radius = 20;
     [SerializeField] private LayerMask _goldLayerMask;
-    
-    private HashSet<Gold> _goldColliders;
 
     public async void Scan(Transform transform, Action<Gold> goldFind)
     {
-        _goldColliders = new ();
-        
         while (transform.gameObject.activeSelf)
         {
             foreach (var goldCollider in Physics.OverlapSphere(transform.position, _radius, _goldLayerMask))
             {
                 if (goldCollider.TryGetComponent(out Gold gold))
                 {
-                    if(_goldColliders.TryGetValue(gold, out var goldPosition))
+                    if(gold.State != Gold.GoldState.Idle)
                         continue;
                 
                     goldFind.Invoke(gold);
@@ -33,7 +29,13 @@ internal class Scanner
         }
     }
     
-    public void SetTargetGold(Gold gold) => _goldColliders.Add(gold);
-
-    public void GoldTaken(Gold gold) => _goldColliders.Remove(gold);
+    public void DisplayScanRadius(Transform transform)
+    {   
+    #if UNITY_EDITOR
+        Gizmos.color = new Color(1, 0, 0, 0.3f);
+        Gizmos.DrawWireSphere(transform.position, _radius);
+        Gizmos.color = new Color(1, 0, 0, 0.1f);
+        Gizmos.DrawSphere(transform.position, _radius);
+    #endif
+    }
 }

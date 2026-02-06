@@ -8,7 +8,7 @@ public class Spawner<T> where T : MonoBehaviour, ISpawnable
     private readonly Pool _items;
     private readonly Action<Vector3> _itemSpawned;
 
-    public Spawner(T prefab, float spawnDelayInSeconds = 0.1f, Action<Vector3> itemSpawned = null)
+    public Spawner(T prefab, float spawnDelayInSeconds = 0.01f, Action<Vector3> itemSpawned = null)
     {
         _items = new Pool(prefab);
         _spawnDelayInSeconds = spawnDelayInSeconds;
