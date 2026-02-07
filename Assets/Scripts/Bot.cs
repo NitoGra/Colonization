@@ -10,24 +10,24 @@ internal class Bot : MonoBehaviour
     private GameObject _targetObject;
     private Func<Base> _createBase;
     private Transform _baseTransform;
-    
+
     private void OnTriggerEnter(Collider other)
     {
         switch (BotState)
         {
             case BotState.Idle:
                 break;
-            
+
             case BotState.TakesGold:
                 if (other.TryGetComponent(out Gold gold))
                     GetGold(gold);
                 break;
-            
+
             case BotState.TookGold:
                 if (other.TryGetComponent(out Base findBase))
                     ReturnToBase(findBase);
                 break;
-            
+
             case BotState.BaseCreator:
                 if (other.TryGetComponent(out Flag flag))
                     CreateNewBase(flag);
@@ -38,9 +38,10 @@ internal class Bot : MonoBehaviour
     public void MoveToGetGold(Gold gold)
     {
         BotState = BotState.TakesGold;
-        _targetObject =gold.gameObject;
+        _targetObject = gold.gameObject;
         MoveTo(gold.transform);
     }
+
     public void MoveToCreateBase(Transform flagPosition, Func<Base> createBase)
     {
         BotState = BotState.BaseCreator;
@@ -55,12 +56,12 @@ internal class Bot : MonoBehaviour
         _baseTransform = setBase.transform;
         setBase.AddBot(this);
     }
-    
+
     private void MoveTo(Transform target)
     {
         transform.DOMove(target.transform.position, _speed).SetSpeedBased().SetEase(Ease.Linear);
 #if UNITY_EDITOR
-        Debug.DrawLine(transform.position, target.transform.position, Color.black, 
+        Debug.DrawLine(transform.position, target.transform.position, Color.black,
             (target.transform.position - transform.position).magnitude / _speed);
 #endif
     }
@@ -74,7 +75,7 @@ internal class Bot : MonoBehaviour
             MoveTo(_baseTransform);
         }
     }
-    
+
     private void ReturnToBase(Base findBase)
     {
         findBase.BotReturnedToBase();
@@ -82,7 +83,7 @@ internal class Bot : MonoBehaviour
         _targetObject = null;
         BotState = BotState.Idle;
     }
-    
+
     private void CreateNewBase(Flag flag)
     {
         if (flag.gameObject.GetEntityId() == _targetObject.GetEntityId())
@@ -94,7 +95,7 @@ internal class Bot : MonoBehaviour
     }
 }
 
-internal enum BotState 
+internal enum BotState
 {
     Idle,
     TakesGold,

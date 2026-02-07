@@ -3,15 +3,17 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 internal class Gold : MonoBehaviour, ISpawnable
-{    
+{
     private const float Radius = 1.5f;
-    
+
     [SerializeField] private float _spawnPositionX;
     [SerializeField] private float _spawnPositionZ;
     [SerializeField] private float _spawnPositionY;
-    
-    private Vector3 SpawnPosition => new (Random.Range(-_spawnPositionX, _spawnPositionX), _spawnPositionY, Random.Range(-_spawnPositionZ, _spawnPositionZ));
-    public GoldState State { get; private set; } 
+
+    private Vector3 SpawnPosition => new(Random.Range(-_spawnPositionX, _spawnPositionX), _spawnPositionY,
+        Random.Range(-_spawnPositionZ, _spawnPositionZ));
+
+    public GoldState State { get; private set; }
     public Action<Vector3> Released { get; set; }
 
     public void Take(Transform parent)
@@ -33,7 +35,7 @@ internal class Gold : MonoBehaviour, ISpawnable
     private Vector3 GetSpawnPositionWithoutBase()
     {
         Vector3 position = SpawnPosition;
-        
+
         while (CheckBase(position) == false)
             position = SpawnPosition;
 
@@ -48,7 +50,7 @@ internal class Gold : MonoBehaviour, ISpawnable
 
         return true;
     }
-    
+
     internal enum GoldState
     {
         Idle,

@@ -10,19 +10,21 @@ internal class Base : MonoBehaviour, IPointerClickHandler
     [SerializeField] private ModelGoldKeeper _modelGoldKeeper;
     [SerializeField] private WeaverGold _weaverGold;
     [SerializeField] private FlagService _flagService;
-    
+
     private void Awake()
     {
         _botListService.Clear();
         _scanner.Scan(transform, SendBotOnGold);
+        
         _modelGoldKeeper.GoldChanged += _weaverGold.GoldDisplay;
-        _flagService.GetMoneyToNewBase += () => _modelGoldKeeper.ChangeBaseType();
         _modelGoldKeeper.OnCreateNewBase += () => SendBotCreateNewBase(_flagService.GetFlagTransform);
         _modelGoldKeeper.OnCreateNewBot += () => _botListService.CreateNewBot(this);
         _modelGoldKeeper.CheckBotsCount += () => _botListService.GetCount;
+        
+        _flagService.GetMoneyToNewBase += () => _modelGoldKeeper.ChangeBaseType();
         _flagService.SetMaterial(GetComponent<Renderer>().material);
         _flagService.Enable();
-        
+
         for (int i = 0; i < _botListService.StartBotCount; i++)
             _botListService.CreateNewBot(this);
     }
@@ -43,7 +45,7 @@ internal class Base : MonoBehaviour, IPointerClickHandler
             bot.MoveToGetGold(gold);
         }
     }
-    
+
     private async void SendBotCreateNewBase(Transform basePosition)
     {
         Bot newBot = await _botListService.GetBotToCreateBase();

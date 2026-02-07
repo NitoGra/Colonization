@@ -17,7 +17,7 @@ internal class ModelGoldKeeper
     {
         _gold++;
         int botCount = CheckBotsCount.Invoke();
-        
+
         if (_model == ModelType.CreateBase && _gold >= BaseCost && botCount > 1)
             CreateNewBase();
         else if ((botCount <= 1 || _model == ModelType.CreateBot) && _gold >= BotCost)
@@ -25,7 +25,7 @@ internal class ModelGoldKeeper
 
         GoldChanged?.Invoke(_gold);
     }
-    
+
     private void ChangeType(ModelType newType) => _model = newType;
 
     private void CreateNewBot()
@@ -40,7 +40,7 @@ internal class ModelGoldKeeper
         OnCreateNewBase.Invoke();
         ChangeType(ModelType.CreateBot);
     }
-    
+
     internal enum ModelType
     {
         CreateBot,
