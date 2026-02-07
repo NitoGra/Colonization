@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008f28c24849c374f8fa5499d30832fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boostrap
-  _spawnDelayInSeconds: 1
+  _spawnDelayInSeconds: 0.2
   _prefabBot: {fileID: 4314439710991886356, guid: 24eb909e6b4fa6047b6f8f983f254c96, type: 3}
   _prefabGold: {fileID: 1885396116402624010, guid: 6ea9a4c5034c0af48b4e53f711e0b840, type: 3}
   _prefabBase: {fileID: 1984559052281047705, guid: e7c244472ec6283409dd29eef26ec322, type: 3}

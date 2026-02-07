@@ -8,8 +8,8 @@ internal class BotListService
 {
     [field: SerializeField] public int StartBotCount { get; private set; }
     [SerializeField] private Bot _botPrefab;
-    private List<Bot> _botsList;
-
+    private List<Bot> _botsList = new();
+    
     public bool TryGetBot(out Bot bot)
     {
         bot = _botsList.Find(t => t.BotState == BotState.Idle);
@@ -25,7 +25,7 @@ internal class BotListService
 
     public int GetCount => _botsList.Count;
 
-    public void Clear() => _botsList.Clear();
+    public void Clear() =>  _botsList.Clear();
     public void Add(Bot bot) => _botsList.Add(bot);
     public void Remove(Bot bot) => _botsList.Remove(bot);
 

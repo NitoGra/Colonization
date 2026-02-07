@@ -32,6 +32,10 @@ internal class FlagService
         FloorClickDetector.BaseClick(iD);
         _material.color = _clickedColor;
         await UniTask.WaitUntil(() => FloorClickDetector.ClickPosition != Vector3.zero);
+        
+        if (_isDisabled)
+            return;
+        
         _material.color = _normalColor;
 
         if (FloorClickDetector.BaseId != iD)
