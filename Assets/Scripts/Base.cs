@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,6 +21,7 @@ internal class Base : MonoBehaviour, IPointerClickHandler
         _modelGoldKeeper.OnCreateNewBot += () => _botListService.CreateNewBot(this);
         _modelGoldKeeper.CheckBotsCount += () => _botListService.GetCount;
         _flagService.SetMaterial(GetComponent<Renderer>().material);
+        _flagService.Enable();
         
         for (int i = 0; i < _botListService.StartBotCount; i++)
             _botListService.CreateNewBot(this);
@@ -47,5 +49,9 @@ internal class Base : MonoBehaviour, IPointerClickHandler
         Bot newBot = await _botListService.GetBotToCreateBase();
         _botListService.Remove(newBot);
         newBot.MoveToCreateBase(basePosition, _flagService.BuildNewBase);
+        _flagService.Disable();
+        float timeCantMoveFlag = (basePosition.position - newBot.transform.position).magnitude / newBot.GetSpeed;
+        await UniTask.WaitForSeconds(timeCantMoveFlag);
+        _flagService.Enable();
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 internal class Bot : MonoBehaviour
 {
     [SerializeField] private float _speed = 1;
+    public float GetSpeed => _speed;
     public BotState BotState { get; private set; } = BotState.Idle;
     private GameObject _targetObject;
     private Func<Base> _createBase;
@@ -12,7 +13,6 @@ internal class Bot : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-
         switch (BotState)
         {
             case BotState.Idle:
@@ -41,10 +41,28 @@ internal class Bot : MonoBehaviour
         _targetObject =gold.gameObject;
         MoveTo(gold.transform);
     }
+    public void MoveToCreateBase(Transform flagPosition, Func<Base> createBase)
+    {
+        BotState = BotState.BaseCreator;
+        _createBase = createBase;
+        _targetObject = flagPosition.gameObject;
+        MoveTo(flagPosition);
+    }
 
+    public void SetBase(Base setBase)
+    {
+        transform.position = setBase.transform.position;
+        _baseTransform = setBase.transform;
+        setBase.AddBot(this);
+    }
+    
     private void MoveTo(Transform target)
     {
         transform.DOMove(target.transform.position, _speed).SetSpeedBased().SetEase(Ease.Linear);
+#if UNITY_EDITOR
+        Debug.DrawLine(transform.position, target.transform.position, Color.black, 
+            (target.transform.position - transform.position).magnitude / _speed);
+#endif
     }
 
     private void GetGold(Gold gold)
@@ -63,21 +81,6 @@ internal class Bot : MonoBehaviour
         _targetObject.SetActive(false);
         _targetObject = null;
         BotState = BotState.Idle;
-    }
-    
-    public void MoveToCreateBase(Transform flagPosition, Func<Base> createBase)
-    {
-        BotState = BotState.BaseCreator;
-        _createBase = createBase;
-        _targetObject = flagPosition.gameObject;
-        MoveTo(flagPosition);
-    }
-
-    public void SetBase(Base setBase)
-    {
-        transform.position = setBase.transform.position;
-        _baseTransform = setBase.transform;
-        setBase.AddBot(this);
     }
     
     private void CreateNewBase(Flag flag)

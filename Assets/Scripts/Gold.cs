@@ -4,6 +4,8 @@ using Random = UnityEngine.Random;
 
 internal class Gold : MonoBehaviour, ISpawnable
 {    
+    private const float Radius = 1.5f;
+    
     [SerializeField] private float _spawnPositionX;
     [SerializeField] private float _spawnPositionZ;
     [SerializeField] private float _spawnPositionY;
@@ -22,10 +24,29 @@ internal class Gold : MonoBehaviour, ISpawnable
 
     public void Spawn(Vector3 position = default)
     {
+        transform.parent = null;
+        transform.position = GetSpawnPositionWithoutBase();
         gameObject.SetActive(true);
         State = GoldState.Idle;
-        transform.parent = null;
-        transform.position = SpawnPosition;
+    }
+
+    private Vector3 GetSpawnPositionWithoutBase()
+    {
+        Vector3 position = SpawnPosition;
+        
+        while (CheckBase(position) == false)
+            position = SpawnPosition;
+
+        return position;
+    }
+
+    private bool CheckBase(Vector3 position)
+    {
+        foreach (var goldCollider in Physics.OverlapSphere(position, Radius))
+            if (goldCollider.TryGetComponent(out Base @base))
+                return false;
+
+        return true;
     }
     
     internal enum GoldState

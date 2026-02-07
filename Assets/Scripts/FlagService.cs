@@ -13,12 +13,17 @@ internal class FlagService
     
     private Material _material;
     private Color _clickedColor = Color.blue;
+    private Color _disableColor = Color.softYellow;
     private Color _normalColor = Color.darkSlateGray;
-
-    public void SetMaterial(Material material) => _material = material;
+    private bool _isDisabled = false;
     
+    public void SetMaterial(Material material) => _material = material;
+
     public async void BaseClick(int iD)
     {
+        if(_isDisabled)
+            return;
+        
         FloorClickDetector.BaseClick(iD);
         _material.color = _clickedColor;
         await UniTask.WaitUntil(() => FloorClickDetector.ClickPosition != Vector3.zero);
@@ -41,5 +46,17 @@ internal class FlagService
     {  
         _flag.gameObject.SetActive(false);
         return MonoBehaviour.Instantiate(_basePrefab, _flag.transform.position, _flag.transform.rotation);
+    }
+
+    public void Disable()
+    {
+        _material.color = _disableColor;
+        _isDisabled = true;
+    }
+    
+    public void Enable()
+    {
+        _material.color = _normalColor;
+        _isDisabled = false;
     }
 }

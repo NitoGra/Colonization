@@ -148,11 +148,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008f28c24849c374f8fa5499d30832fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boostrap
-  _spawnDelayInSeconds: 0.2
+  _spawnDelayInSeconds: 1
   _prefabBot: {fileID: 4314439710991886356, guid: 24eb909e6b4fa6047b6f8f983f254c96, type: 3}
   _prefabGold: {fileID: 1885396116402624010, guid: 6ea9a4c5034c0af48b4e53f711e0b840, type: 3}
   _prefabBase: {fileID: 1984559052281047705, guid: e7c244472ec6283409dd29eef26ec322, type: 3}
-  _startBase: {fileID: 0}
+  _startBase: {fileID: 1810840538}
 --- !u!4 &306567306
 Transform:
   m_ObjectHideFlags: 0
@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -322,6 +323,23 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c078c2862aa4f1c8965d1f25890a038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseWheelCameraController
+  _moveSpeed: 10
+  _smoothTime: 0.15
+  _invertScroll: 1
+  _minY: 10
+  _maxY: 120
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -768,6 +786,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1519b7656e22bc94486f6e6252fd3d04, type: 3}
+--- !u!114 &1810840538 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4746954645687265045, guid: 1519b7656e22bc94486f6e6252fd3d04, type: 3}
+  m_PrefabInstance: {fileID: 1338282189}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea1c9e49fb947dca2f2d5ac54375e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Base
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

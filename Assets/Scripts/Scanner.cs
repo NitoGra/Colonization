@@ -16,13 +16,16 @@ internal class Scanner
         {
             foreach (var goldCollider in Physics.OverlapSphere(transform.position, _radius, _goldLayerMask))
             {
-                if (goldCollider.TryGetComponent(out Gold gold))
-                {
-                    if(gold.State != Gold.GoldState.Idle)
-                        continue;
-                
-                    goldFind.Invoke(gold);
-                }
+                if (goldCollider.TryGetComponent(out Gold gold) == false)
+                    continue;
+
+                if (gold.State != Gold.GoldState.Idle)
+                    continue;
+
+                if ((gold.transform.position - transform.position).magnitude > _radius)
+                    continue;
+
+                goldFind.Invoke(gold);
             }
             
             await UniTask.WaitForSeconds(_scanDelayInSeconds);
