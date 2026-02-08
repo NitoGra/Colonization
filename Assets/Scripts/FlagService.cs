@@ -16,12 +16,7 @@ internal class FlagService
     private Color _disableColor = Color.softYellow;
     private Color _normalColor = Color.darkSlateGray;
     private bool _isDisabled = false;
-
-    public void Init(Base basePrefab)
-    {
-        _basePrefab = basePrefab;
-    }
-
+    
     public void SetMaterial(Material material) => _material = material;
 
     public async void BaseClick(int iD)

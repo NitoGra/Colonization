@@ -7,8 +7,5 @@ internal class WeaverGold
 {
     [SerializeField] private TextMeshProUGUI _textMeshProUGUI;
 
-    public void GoldDisplay(int gold)
-    {
-        _textMeshProUGUI.text =$"{gold}g";
-    }
+    public void GoldDisplay(int gold) => _textMeshProUGUI.text =$"{gold}g";
 }

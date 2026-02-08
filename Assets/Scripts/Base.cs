@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,12 +13,11 @@ internal class Base : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         _botListService.Clear();
-        _scanner.Scan(transform, SendBotOnGold);
-        
-        _modelGoldKeeper.GoldChanged += _weaverGold.GoldDisplay;
-        _modelGoldKeeper.OnCreateNewBase += () => SendBotCreateNewBase(_flagService.GetFlagTransform);
-        _modelGoldKeeper.OnCreateNewBot += () => _botListService.CreateNewBot(this);
-        _modelGoldKeeper.CheckBotsCount += () => _botListService.GetCount;
+
+        _modelGoldKeeper.Init(_weaverGold.GoldDisplay,
+            () => _botListService.GetCount,
+            () => SendBotCreateNewBase(_flagService.GetFlagTransform),
+            () => _botListService.CreateNewBot(this));
         
         _flagService.GetMoneyToNewBase += () => _modelGoldKeeper.ChangeBaseType();
         _flagService.SetMaterial(GetComponent<Renderer>().material);
@@ -27,6 +25,8 @@ internal class Base : MonoBehaviour, IPointerClickHandler
 
         for (int i = 0; i < _botListService.StartBotCount; i++)
             _botListService.CreateNewBot(this);
+        
+        _scanner.Scan(transform, SendBotOnGold);
     }
 
     public void OnPointerClick(PointerEventData eventData) => _flagService.BaseClick(gameObject.GetEntityId());

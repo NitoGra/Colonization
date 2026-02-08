@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 internal class Gold : MonoBehaviour, ISpawnable
 {
-    private const float Radius = 1.5f;
+    private const float SpawnCheckRadius = 0.5f;
 
     [SerializeField] private float _spawnPositionX;
     [SerializeField] private float _spawnPositionZ;
@@ -44,7 +44,7 @@ internal class Gold : MonoBehaviour, ISpawnable
 
     private bool CheckBase(Vector3 position)
     {
-        foreach (var goldCollider in Physics.OverlapSphere(position, Radius))
+        foreach (var goldCollider in Physics.OverlapSphere(position, SpawnCheckRadius))
             if (goldCollider.TryGetComponent(out Base @base))
                 return false;
 

@@ -13,10 +13,7 @@ public class MouseWheelCameraController : MonoBehaviour
     private Vector3 _velocity = Vector3.zero;
     private float _targetYPosition;
 
-    private void Start()
-    {
-        _targetYPosition = transform.position.y;
-    }
+    private void Start() => _targetYPosition = transform.position.y;
 
     private void Update()
     {

@@ -3,41 +3,56 @@
 [Serializable]
 internal class ModelGoldKeeper
 {
-    private const int BotCost = 3;
-    private const int BaseCost = 5;
+    private const int CreateBotCost = 3;
+    private const int CreateBaseCost = 5;
 
     private int _gold = 0;
-    public Action<int> GoldChanged;
-    public Action OnCreateNewBot;
-    public Action OnCreateNewBase;
     private ModelType _model;
-    public Func<int> CheckBotsCount;
+    private Func<int> _checkBotsCount;
+
+    private Action<int> _goldChanged;
+    private Action _onCreateNewBot;
+    private Action _onCreateNewBase;
+
+    public void Init(Action<int> goldChanged, Func<int> checkBotsCount,
+        Action onCreateNewBase,
+        Action onCreateNewBot)
+    {
+        _checkBotsCount = checkBotsCount;
+        _model = ModelType.CreateBot;
+        _goldChanged += goldChanged;
+        _onCreateNewBase += onCreateNewBase;
+        _onCreateNewBot += onCreateNewBot;
+
+        _gold = 0;
+        _goldChanged.Invoke(_gold);
+    }
 
     public void IncreaseGold()
     {
         _gold++;
-        int botCount = CheckBotsCount.Invoke();
+        int botCount = _checkBotsCount.Invoke();
 
-        if (_model == ModelType.CreateBase && _gold >= BaseCost && botCount > 1)
+        if (_model == ModelType.CreateBase && _gold >= CreateBaseCost && botCount > 1)
             CreateNewBase();
-        else if ((botCount <= 1 || _model == ModelType.CreateBot) && _gold >= BotCost)
+        else if ((botCount <= 1 || _model == ModelType.CreateBot) && _gold >= CreateBotCost)
             CreateNewBot();
 
-        GoldChanged?.Invoke(_gold);
+        _goldChanged?.Invoke(_gold);
     }
 
     private void ChangeType(ModelType newType) => _model = newType;
 
     private void CreateNewBot()
     {
-        _gold -= BotCost;
-        OnCreateNewBot.Invoke();
+        _gold -= CreateBotCost;
+        _onCreateNewBot.Invoke();
     }
 
     private void CreateNewBase()
     {
-        _gold -= BaseCost;
-        OnCreateNewBase.Invoke();
+        _gold -= CreateBaseCost;
+        _onCreateNewBase.Invoke();
         ChangeType(ModelType.CreateBot);
     }
 
