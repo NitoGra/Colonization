@@ -10,6 +10,8 @@ internal class BotListService
     [SerializeField] private Bot _botPrefab;
     private List<Bot> _botsList = new();
     
+    public int GetCount => _botsList.Count;
+    
     public bool TryGetBot(out Bot bot)
     {
         bot = _botsList.Find(t => t.BotState == BotState.Idle);
@@ -22,8 +24,6 @@ internal class BotListService
         await UniTask.WaitUntil(() => TryGetBot(out bot));
         return bot;
     }
-
-    public int GetCount => _botsList.Count;
 
     public void Clear() =>  _botsList.Clear();
     public void Add(Bot bot) => _botsList.Add(bot);

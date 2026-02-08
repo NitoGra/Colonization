@@ -8,14 +8,14 @@ internal class FlagService
     [SerializeField] private Flag _flag;
     [SerializeField] private Base _basePrefab;
 
-    public Transform GetFlagTransform => _flag.transform;
-    public Action GetMoneyToNewBase;
-
     private Material _material;
     private Color _clickedColor = Color.blue;
     private Color _disableColor = Color.softYellow;
     private Color _normalColor = Color.darkSlateGray;
     private bool _isDisabled = false;
+    public event Action GotMoneyToNewBase;
+    
+    public Transform GetFlagTransform => _flag.transform;
     
     public void SetMaterial(Material material) => _material = material;
 
@@ -23,7 +23,7 @@ internal class FlagService
     {
         if (_isDisabled)
             return;
-
+        
         FloorClickDetector.BaseClick(iD);
         _material.color = _clickedColor;
         await UniTask.WaitUntil(() => FloorClickDetector.ClickPosition != Vector3.zero);
@@ -43,7 +43,7 @@ internal class FlagService
             0,
             FloorClickDetector.ClickPosition.z);
 
-        GetMoneyToNewBase.Invoke();
+        GotMoneyToNewBase?.Invoke();
     }
 
     public Base BuildNewBase()

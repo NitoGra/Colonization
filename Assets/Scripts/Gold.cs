@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,13 +11,15 @@ internal class Gold : MonoBehaviour, ISpawnable
     [SerializeField] private float _spawnPositionZ;
     [SerializeField] private float _spawnPositionY;
 
-    private Vector3 SpawnPosition => new(Random.Range(-_spawnPositionX, _spawnPositionX), _spawnPositionY,
+    private Vector3 SpawnRandomPosition => new(Random.Range(-_spawnPositionX, _spawnPositionX), _spawnPositionY,
         Random.Range(-_spawnPositionZ, _spawnPositionZ));
 
     public GoldState State { get; private set; }
     public Action<Vector3> Released { get; set; }
 
-    public void Take(Transform parent)
+    private void OnDisable() => Released?.Invoke(transform.position);
+
+    public void WeTaken(Transform parent)
     {
         transform.parent = parent;
         State = GoldState.Taken;
@@ -24,37 +27,36 @@ internal class Gold : MonoBehaviour, ISpawnable
 
     public void SetTarget() => State = GoldState.OnTarget;
 
-    public void Spawn(Vector3 position = default)
+    public async void Spawn(Vector3 position = default)
     {
         transform.parent = null;
-        transform.position = GetSpawnPositionWithoutBase();
+        transform.position = await GenerateSpawnPosition();
         gameObject.SetActive(true);
         State = GoldState.Idle;
     }
 
-    private Vector3 GetSpawnPositionWithoutBase()
+    private async UniTask<Vector3> GenerateSpawnPosition()
     {
-        Vector3 position = SpawnPosition;
-
-        while (CheckBase(position) == false)
-            position = SpawnPosition;
-
+        Vector3 position = Vector3.zero;
+        await UniTask.WaitUntil(() => WaitPosition(out position));
         return position;
     }
 
-    private bool CheckBase(Vector3 position)
+    private bool WaitPosition(out Vector3 position)
     {
-        foreach (var goldCollider in Physics.OverlapSphere(position, SpawnCheckRadius))
-            if (goldCollider.TryGetComponent(out Base @base))
-                return false;
-
+        do
+            position = SpawnRandomPosition;
+        while (CheckBaseExistence(position));
+        
         return true;
     }
 
-    internal enum GoldState
+    private bool CheckBaseExistence(Vector3 position)
     {
-        Idle,
-        OnTarget,
-        Taken
+        foreach (var goldCollider in Physics.OverlapSphere(position, SpawnCheckRadius))
+            if (goldCollider.TryGetComponent(out Base @base))
+                return true;
+
+        return false;
     }
 }

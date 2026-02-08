@@ -9,6 +9,7 @@ public class Boostrap : MonoBehaviour
     [SerializeField] private Base _prefabBase;
     [Space] 
     [SerializeField] private Base _startBase;
+    
     private Spawner<Gold> _spawnerGold;
 
     private void Awake()

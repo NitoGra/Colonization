@@ -20,7 +20,7 @@ internal class Bot : MonoBehaviour
 
             case BotState.TakesGold:
                 if (other.TryGetComponent(out Gold gold))
-                    GetGold(gold);
+                    TakeGold(gold);
                 break;
 
             case BotState.TookGold:
@@ -66,19 +66,19 @@ internal class Bot : MonoBehaviour
 #endif
     }
 
-    private void GetGold(Gold gold)
+    private void TakeGold(Gold gold)
     {
-        if (gold.State == Gold.GoldState.OnTarget && gold.gameObject.GetEntityId() == _targetObject.GetEntityId())
+        if (gold.State == GoldState.OnTarget && gold.gameObject.GetEntityId() == _targetObject.GetEntityId())
         {
             BotState = BotState.TookGold;
-            gold.Take(transform);
+            gold.WeTaken(transform);
             MoveTo(_baseTransform);
         }
     }
 
     private void ReturnToBase(Base findBase)
     {
-        findBase.BotReturnedToBase();
+        findBase.ReturnBot();
         _targetObject.SetActive(false);
         _targetObject = null;
         BotState = BotState.Idle;
@@ -93,12 +93,4 @@ internal class Bot : MonoBehaviour
             SetBase(newBase);
         }
     }
-}
-
-internal enum BotState
-{
-    Idle,
-    TakesGold,
-    TookGold,
-    BaseCreator
 }

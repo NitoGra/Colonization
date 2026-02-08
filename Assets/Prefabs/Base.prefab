@@ -397,15 +397,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Base
   _scanner:
     _scanDelayInSeconds: 0.3
-    _radius: 10
-    _goldLayerMask:
+    <Radius>k__BackingField: 20
+    _targetMask:
       serializedVersion: 2
       m_Bits: 64
   _botListService:
     <StartBotCount>k__BackingField: 0
     _botPrefab: {fileID: 4314439710991886356, guid: 24eb909e6b4fa6047b6f8f983f254c96, type: 3}
-    _botsList: []
-  _weaverGold:
+  _goldView:
     _textMeshProUGUI: {fileID: 2322395741714350489}
   _flagService:
     _flag: {fileID: 8515816185837272055}
